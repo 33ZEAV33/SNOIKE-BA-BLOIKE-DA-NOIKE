@@ -6,7 +6,7 @@ import com.donkey.snoike.model.Snoike;
 public class SnoikeManager {
     private Snoike snake;
     public Snoike createSnake() {
-
+        return null;
     }
     public void changeDirection(Direction direction){
 
