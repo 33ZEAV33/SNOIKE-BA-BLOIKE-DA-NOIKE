@@ -12,11 +12,22 @@ public class Snoike {
         return bodySegments.get(0);
     }
 
+    public Snoike() {
+        this.bodySegments = new ArrayList<>();
+        bodySegments.add(new BodySegment());
+        this.position = getSnoikeHead().getPosition();
+        this.direction = Direction.UP;
+
+    }
     public List<BodySegment> getBodySegments() {
         List<BodySegment> nonheadbodysegments = new ArrayList<>();
         for(int index = 1; index < bodySegments.size(); index++){
             nonheadbodysegments.add(bodySegments.get(index));
         }
         return nonheadbodysegments;
+    }
+
+    public Rectangle getPosition() {
+        return position;
     }
 }

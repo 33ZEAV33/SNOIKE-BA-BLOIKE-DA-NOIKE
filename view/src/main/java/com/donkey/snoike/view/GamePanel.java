@@ -1,8 +1,12 @@
 package com.donkey.snoike.view;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.function.Consumer;
 import javax.swing.*;
 import java.awt.*;
 public class GamePanel extends JPanel {
+  private final Logger log = LoggerFactory.getLogger(this.getClass());
+
   private Consumer<Graphics2D> graphics;
 
   public GamePanel(Consumer<Graphics2D> graphics)  {
@@ -13,8 +17,10 @@ public class GamePanel extends JPanel {
 
   @Override
   public void paintComponent(Graphics g) {
+    log.info("PAINTING GamePanel COMPONENT");
     super.paintComponent(g);
     Graphics2D graphics2D = (Graphics2D)g;
     graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+    graphics.accept(graphics2D);
   }
 }
