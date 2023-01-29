@@ -12,9 +12,9 @@ public class Snoike {
         return bodySegments.get(0);
     }
 
-    public Snoike() {
+    public Snoike(Rectangle rectangle) {
         this.bodySegments = new ArrayList<>();
-        bodySegments.add(new BodySegment());
+        bodySegments.add(new BodySegment(rectangle));
         this.position = getSnoikeHead().getPosition();
         this.direction = Direction.UP;
 

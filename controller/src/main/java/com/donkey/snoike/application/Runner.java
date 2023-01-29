@@ -20,33 +20,40 @@ public class Runner implements CommandLineRunner {
   private GamePanel gamePanel;
   private GameFrame gameFrame;
   private GameField gameField;
+
+  boolean isGameOver = false;
   DrawManager drawManager = new DrawManager();
 
   public Runner() {
-    this.snoike = new Snoike();
+    this.snoike = new Snoike(new Rectangle(187,180, 10, 10));
     this.gameField = new GameField(new Rectangle(375, 375));
-    this.gamePanel = new GamePanel(this::draw);
-    this.gameFrame = new GameFrame(gamePanel, gameField.getBorders());
+    this.gamePanel = new GamePanel(this::draw, gameField);
+    this.gameFrame = new GameFrame(gamePanel);
   }
   private void draw(Graphics2D g) {
-    drawManager.drawBorders(g, gameField.getBorders());
     if(gameField.contains(snoike.getPosition())) {
       drawManager.drawSnake(g, snoike);
+      log.info("drew snake @ (x: {}, y: {}, width: {}, height: {})",
+          snoike.getPosition().getX(),
+          snoike.getPosition().getY(),
+          snoike.getPosition().getWidth(),
+          snoike.getPosition().getHeight());
     } else {
+      isGameOver = true;
       drawManager.drawGameOver(g);
     }
   }
 
-  @Scheduled(fixedDelay = 200)
+  @Scheduled(fixedDelay = 100)
   public void moveSnake() {
-    //snoike.getPosition().translate(5, -5);
-    log.info("snake position at: {}", snoike.getPosition());
-
-    gamePanel.repaint();
+    if (!isGameOver) {
+      snoike.getPosition().translate(5, -5);
+      log.info("snake was moved to (x: {}, y: {})", snoike.getPosition().getX(), snoike.getPosition().getY());
+      gamePanel.repaint();
+    }
   }
   @Override
   public void run(String... strings) throws Exception {
-    log.info("setting frame visibility");
     gameFrame.setVisible(true);
   }
 }
