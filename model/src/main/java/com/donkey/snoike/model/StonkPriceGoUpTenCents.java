@@ -4,7 +4,6 @@ import java.awt.*;
 
 public class StonkPriceGoUpTenCents extends StonkPriceGoWhee {
     public StonkPriceGoUpTenCents(Rectangle position) {
-        super(position);
-        this.stonkValue = 10.0;
+        super(10, position);
     }
 }

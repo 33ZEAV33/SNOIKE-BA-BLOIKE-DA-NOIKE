@@ -3,8 +3,8 @@ package com.donkey.snoike.model;
 import java.awt.Rectangle;
 
 public class StonkPriceGoWhee {
-  double stonkValue;
-  Rectangle position;
+  private double stonkValue;
+  private Rectangle position;
 
   public StonkPriceGoWhee(double stonkValue, Rectangle position) {
     this.stonkValue = stonkValue;
@@ -14,5 +14,9 @@ public class StonkPriceGoWhee {
   public StonkPriceGoWhee(Rectangle position) {
     this.position = position;
     this.stonkValue = 0;
+  }
+
+  public Rectangle getPosition() {
+    return position;
   }
 }

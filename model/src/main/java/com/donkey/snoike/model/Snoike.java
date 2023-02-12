@@ -20,6 +20,10 @@ public class Snoike {
 
     }
     public List<BodySegment> getBodySegments() {
+        return bodySegments;
+    }
+
+    public List<BodySegment> getNonHeadBodySegments() {
         List<BodySegment> nonheadbodysegments = new ArrayList<>();
         for(int index = 1; index < bodySegments.size(); index++){
             nonheadbodysegments.add(bodySegments.get(index));
