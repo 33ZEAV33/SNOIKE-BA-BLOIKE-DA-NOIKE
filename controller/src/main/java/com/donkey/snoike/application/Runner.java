@@ -50,7 +50,7 @@ public class Runner implements CommandLineRunner {
   private void draw(Graphics2D g) {
     if(gameField.contains(snoikeManager.getSnoike().getPosition())) {
       drawManager.drawSnake(g, snoikeManager.getSnoike());
-      drawManager.drawWhees(g, stonkPriceGoWheeManager.getReginaldsStonkPriceGoWheeCollection());
+      drawManager.drawWhees(g, stonkPriceGoWheeManager.getReginaldsStonkPriceGoWheeCollection().values());
 //      log.info("drew snake @ (x: {}, y: {}, width: {}, height: {})",
 //              snoikeManager.getSnoike().getPosition().getX(),
 //              snoikeManager.getSnoike().getPosition().getY(),
@@ -81,13 +81,10 @@ public class Runner implements CommandLineRunner {
       }
 
     }
-
     //log.info("snake was moved to (x: {}, y: {})", snoikeManager.getSnoike().getPosition().getX(), snoikeManager.getSnoike().getPosition().getY());
-    Iterator<StonkPriceGoWhee> wheeIterator = stonkPriceGoWheeManager.getReginaldsStonkPriceGoWheeCollection().iterator();
-    while (wheeIterator.hasNext()) {
-      StonkPriceGoWhee whee = wheeIterator.next();
+    for (StonkPriceGoWhee whee : stonkPriceGoWheeManager.getReginaldsStonkPriceGoWheeCollection().values()) {
       if (intersectsByAtLeastSeventyFivePercent(snoikeManager.getSnoike().getSnoikeHead().getPosition(), whee.getPosition())) {
-        wheeIterator.remove();
+        stonkPriceGoWheeManager.removeWhee(whee);
         stonkPriceGoWheeManager.makeWhee(gameField.getBorders(), snoikeManager.getSnoike());
         snoikeManager.growSnake();
       }

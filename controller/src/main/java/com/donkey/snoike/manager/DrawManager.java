@@ -6,6 +6,7 @@ import com.donkey.snoike.model.Snoike;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import org.slf4j.Logger;
@@ -15,7 +16,7 @@ public class DrawManager {
 
   private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-  public void drawWhees(Graphics2D graphics2D, List<StonkPriceGoWhee> whees) {
+  public void drawWhees(Graphics2D graphics2D, Collection<StonkPriceGoWhee> whees) {
     for (StonkPriceGoWhee whee : whees) {
       drawStonkPriceGoWhee(graphics2D, whee);
     }

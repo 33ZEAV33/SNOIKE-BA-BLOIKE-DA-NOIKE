@@ -3,11 +3,15 @@ package com.donkey.snoike.manager;
 import com.donkey.snoike.model.BodySegment;
 import com.donkey.snoike.model.Snoike;
 import com.donkey.snoike.model.StonkPriceGoWhee;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 import javax.swing.text.Position;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,21 +19,22 @@ import org.slf4j.LoggerFactory;
 public class StonkPriceGoWheeManager {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private List<StonkPriceGoWhee> reginaldsStonkPriceGoWheeCollection;
-    private List<Rectangle> freePositions;
+    private ConcurrentHashMap<Rectangle, StonkPriceGoWhee> reginaldsStonkPriceGoWheeCollection;
+    private ConcurrentHashMap<Point, Rectangle> freePositions;
 
     public StonkPriceGoWheeManager() {
-        this.reginaldsStonkPriceGoWheeCollection = new ArrayList<>();
+        this.reginaldsStonkPriceGoWheeCollection = new ConcurrentHashMap<>();
     }
     private void addWhee(StonkPriceGoWhee stonkPriceGoWhee) {
-        reginaldsStonkPriceGoWheeCollection.add(stonkPriceGoWhee);
+        reginaldsStonkPriceGoWheeCollection.put(stonkPriceGoWhee.getPosition(), stonkPriceGoWhee);
     }
     public void removeWhee(StonkPriceGoWhee stonkPriceGoWhee){
-        reginaldsStonkPriceGoWheeCollection.remove(stonkPriceGoWhee);
+        reginaldsStonkPriceGoWheeCollection.remove(stonkPriceGoWhee.getPosition());
     }
     public void makeWhee(Rectangle borders, Snoike snoike) {
-        List<Rectangle> freePositions = generateFreePositions(borders, snoike);
+        ConcurrentHashMap<Point, Rectangle> freePositions = generateFreePositions(borders, snoike);
         int numberOfFreePositions = freePositions.size();
+        log.info("num free positions: {}", numberOfFreePositions);
         if(numberOfFreePositions == 0) {
             return;
         }
@@ -39,7 +44,7 @@ public class StonkPriceGoWheeManager {
             randomIndex = random.nextInt(numberOfFreePositions - 1);
         }
         try {
-            StonkPriceGoWhee stonkPriceGoWhee = new StonkPriceGoWhee(freePositions.get(randomIndex));
+            StonkPriceGoWhee stonkPriceGoWhee = new StonkPriceGoWhee(new ArrayList<>(freePositions.values()).get(randomIndex));
             log.info("NEW WHEE: " + stonkPriceGoWhee.getPosition());
             addWhee(stonkPriceGoWhee);
             log.info("NEW SNAKE SIZE: " + snoike.getBodySegments().size());
@@ -49,9 +54,9 @@ public class StonkPriceGoWheeManager {
         }
     }
 
-    private List<Rectangle> generateFreePositions(Rectangle borders, Snoike snoike) {
+    private ConcurrentHashMap<Point, Rectangle> generateFreePositions(Rectangle borders, Snoike snoike) {
         if(freePositions == null) {
-            freePositions = new ArrayList<>();
+            freePositions = new ConcurrentHashMap<>();
             List<Integer> potentialXPositions = new ArrayList<>();
             for(int i = 0; i < borders.getMaxX(); i += 10) {
                 potentialXPositions.add(i);
@@ -64,34 +69,33 @@ public class StonkPriceGoWheeManager {
             for(Integer potentialX: potentialXPositions) {
                 for(Integer potentialY: potentialYPositions) {
                     Rectangle potentialPosition = new Rectangle(potentialX, potentialY, 10, 10);
-                    freePositions.add(potentialPosition);
+                    freePositions.put(potentialPosition.getLocation(), potentialPosition);
                 }
             }
         }
 
-        Iterator<Rectangle> freePositionsIterator = freePositions.iterator();
-        while (freePositionsIterator.hasNext()) {
-            Rectangle potentialPosition = freePositionsIterator.next();
+        for(Rectangle freePosition: freePositions.values()) {
+            Rectangle potentialPosition = freePosition;
             for(BodySegment bodySegment: snoike.getBodySegments()) {
                 if (bodySegment.getPosition().intersects(potentialPosition)) {
-                    freePositionsIterator.remove();
+                    freePositions.remove(freePosition.getLocation());
                 }
             }
-            for(StonkPriceGoWhee whee: reginaldsStonkPriceGoWheeCollection) {
+            for(StonkPriceGoWhee whee: reginaldsStonkPriceGoWheeCollection.values()) {
                 if (whee.getPosition().intersects(potentialPosition)) {
-                    freePositionsIterator.remove();
+                    freePositions.remove(freePosition.getLocation());
                 }
             }
         }
         return freePositions;
     }
 
-    public List<StonkPriceGoWhee> getReginaldsStonkPriceGoWheeCollection() {
+    public Map<Rectangle, StonkPriceGoWhee> getReginaldsStonkPriceGoWheeCollection() {
         return reginaldsStonkPriceGoWheeCollection;
     }
 
-    public List<Rectangle> getFreePositions() {
-        return freePositions;
-    }
+    //public List<Rectangle> getFreePositions() {
+//        return freePositions;
+//    }
 
 }
