@@ -20,12 +20,11 @@ public class StonkPriceGoWheeManager {
 
     public StonkPriceGoWheeManager() {
         this.reginaldsStonkPriceGoWheeCollection = new ArrayList<>();
-        this.freePositions = new ArrayList<>();
     }
     private void addWhee(StonkPriceGoWhee stonkPriceGoWhee) {
         reginaldsStonkPriceGoWheeCollection.add(stonkPriceGoWhee);
     }
-    private void removeWhee(StonkPriceGoWhee stonkPriceGoWhee){
+    public void removeWhee(StonkPriceGoWhee stonkPriceGoWhee){
         reginaldsStonkPriceGoWheeCollection.remove(stonkPriceGoWhee);
     }
     public void makeWhee(Rectangle borders, Snoike snoike) {
@@ -41,7 +40,9 @@ public class StonkPriceGoWheeManager {
         }
         try {
             StonkPriceGoWhee stonkPriceGoWhee = new StonkPriceGoWhee(freePositions.get(randomIndex));
+            log.info("NEW WHEE: " + stonkPriceGoWhee.getPosition());
             addWhee(stonkPriceGoWhee);
+            log.info("NEW SNAKE SIZE: " + snoike.getBodySegments().size());
         } catch (Exception e) {
             log.info("FREE POSITIONS: {}", numberOfFreePositions);
             log.info("RANDOM INDEX: {}", randomIndex);
@@ -49,20 +50,22 @@ public class StonkPriceGoWheeManager {
     }
 
     private List<Rectangle> generateFreePositions(Rectangle borders, Snoike snoike) {
-        List<Rectangle> freePositions = new ArrayList<>();
-        List<Integer> potentialXPositions = new ArrayList<>();
-        for(int i = 0; i < borders.getMaxX(); i += 10) {
-            potentialXPositions.add(i);
-        }
-        List<Integer> potentialYPositions = new ArrayList<>();
-        for(int i = 0; i < borders.getMaxY(); i += 10) {
-            potentialYPositions.add(i);
-        }
+        if(freePositions == null) {
+            freePositions = new ArrayList<>();
+            List<Integer> potentialXPositions = new ArrayList<>();
+            for(int i = 0; i < borders.getMaxX(); i += 10) {
+                potentialXPositions.add(i);
+            }
+            List<Integer> potentialYPositions = new ArrayList<>();
+            for(int i = 0; i < borders.getMaxY(); i += 10) {
+                potentialYPositions.add(i);
+            }
 
-        for(Integer potentialX: potentialXPositions) {
-            for(Integer potentialY: potentialYPositions) {
-                Rectangle potentialPosition = new Rectangle(potentialX, potentialY, 10, 10);
-                freePositions.add(potentialPosition);
+            for(Integer potentialX: potentialXPositions) {
+                for(Integer potentialY: potentialYPositions) {
+                    Rectangle potentialPosition = new Rectangle(potentialX, potentialY, 10, 10);
+                    freePositions.add(potentialPosition);
+                }
             }
         }
 
