@@ -3,17 +3,12 @@ package com.donkey.snoike.application;
 import com.donkey.snoike.manager.DrawManager;
 import com.donkey.snoike.manager.SnoikeManager;
 import com.donkey.snoike.manager.StonkPriceGoWheeManager;
-import com.donkey.snoike.model.BodySegment;
-import com.donkey.snoike.model.Direction;
 import com.donkey.snoike.model.GameField;
-import com.donkey.snoike.model.Snoike;
 import com.donkey.snoike.model.StonkPriceGoWhee;
 import com.donkey.snoike.view.GameFrame;
 import com.donkey.snoike.view.GamePanel;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.util.Iterator;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -68,20 +63,9 @@ public class Runner implements CommandLineRunner {
       return;
     }
 
-    List<BodySegment> bodySegmentList = snoikeManager.getBodySegments();
-    for (BodySegment bodySegment : bodySegmentList) {
-      if (snoikeManager.getSnoike().getDirection() == Direction.UP) {
-        bodySegment.getPosition().translate(0, -1);
-      } else if (snoikeManager.getSnoike().getDirection() == Direction.DOWN) {
-        bodySegment.getPosition().translate(0, 1);
-      } else if (snoikeManager.getSnoike().getDirection() == Direction.LEFT) {
-        bodySegment.getPosition().translate(-1, 0);
-      } else if (snoikeManager.getSnoike().getDirection() == Direction.RIGHT) {
-        bodySegment.getPosition().translate(1, 0);
-      }
+    snoikeManager.moveItSnoike();
 
-    }
-    //log.info("snake was moved to (x: {}, y: {})", snoikeManager.getSnoike().getPosition().getX(), snoikeManager.getSnoike().getPosition().getY());
+
     for (StonkPriceGoWhee whee : stonkPriceGoWheeManager.getReginaldsStonkPriceGoWheeCollection().values()) {
       if (intersectsByAtLeastSeventyFivePercent(snoikeManager.getSnoike().getSnoikeHead().getPosition(), whee.getPosition())) {
         stonkPriceGoWheeManager.removeWhee(whee);
